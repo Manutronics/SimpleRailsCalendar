@@ -1,0 +1,49 @@
+<h1>Listing Meetings</h1>
+
+<% start_date = params.fetch(:start_date, Date.today).to_date %>
+
+<%# this is for the week calendar %>
+<%# date_range = (start_date.beginning_of_week..start_date.end_of_week).to_a %>
+
+<%# this is for the month calendar %>
+<% date_range = (start_date.beginning_of_month.beginning_of_week..start_date.end_of_month.end_of_week).to_a %>
+
+<%= link_to "Previous", start_date: date_range.first - 1.day %>
+<%= I18n.t('date.month_names')[start_date.month] %>
+<%= start_date.year %>
+<%= link_to "Next", start_date: date_range.last + 1.day %>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <% date_range.slice(0, 7).each do |day| %>
+                <th>
+                    <%= I18n.t('date.abbr_day_names')[day.wday] %>
+                </th>
+            <% end %>
+        </tr>
+    </thead>
+    <tbody>
+        <% date_range.each_slice(7) do |week| %>
+            <tr>
+                <% week.each do |day| %>
+                    <td>
+                        <!--
+                        <button type="button" class="btn btn-outline-secondary btn-block w-100"><%= day.day %></button>
+                        <% @meetings.select{ |m| m.start_time.to_date == day}.each do |meeting| %>
+                            <div><%= link_to meeting.title, "#" %></div>
+                        <% end %>
+                        -->
+                        <div class="bg-light p-5 rounded-lg m-3">
+                            <h1 class="display-2"><%= day.day %></h1>
+                            <hr class="my-2">
+                            <% @meetings.select{ |m| m.start_time.to_date == day}.each do |meeting| %>
+                                <div><%= link_to meeting.title, "#" %></div>
+                            <% end %>
+                        </div>
+                    </td>
+                <% end %>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
